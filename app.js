@@ -11,6 +11,9 @@ class Tree {
   constructor(arr) {
     this.arr = arr;
     this.root = this.buildTree(this.arr, 0, this.arr.length - 1);
+    this.preorderArr = [];
+    this.inorderArr = [];
+    this.postorderArr = [];
   };
 
   // 1. build a binary tree from an array.
@@ -90,7 +93,73 @@ class Tree {
     } else if (root.data < value) {
       return this.find(root.right, value);
     };
-  }
+  };
+
+  // 5. LevelOrder traverse the tree in breadth-first level
+  levelOrder(root = this.root) {
+    let queue = [];
+    let result = [];
+
+    if (root === null) return;
+    queue.push(root);
+
+    while (queue.length > 0) {
+      let cur = queue.shift();
+
+      if (cur.left !== null) {
+        queue.push(cur.left);
+      };
+
+      if (cur.right !== null) {
+        queue.push(cur.right);
+      };
+
+      result.push(cur.data);
+    };
+
+    return result;
+  };
+
+  // preorder: root left right
+  // inroder: left root right
+  // postorder: left right root 
+
+  // 6. Functions should traverse the tree in their respective depth-first order
+  preorder(root = this.root) {
+    if (root === null) return;
+
+    this.preorderArr.push(root.data);
+
+    this.preorder(root.left);
+    this.preorder(root.right);
+
+    return this.preorderArr;
+  };
+
+  inorder(root = this.root) {
+    if (root === null) return;
+    
+    this.inorder(root.left);
+    this.inorderArr.push(root.data);
+    this.inorder(root.right);
+
+    return this.inorderArr;
+  };
+
+  postorder(root = this.root) {
+    if (root === null) return;
+
+    this.postorder(root.left);
+    this.postorder(root.right);
+    this.postorderArr.push(root.data);
+
+    return this.postorderArr;
+  };
+
+  // 7. Height accepts a node and returns its height.
+  height(node) {
+    
+  };
 };
 
 
@@ -119,8 +188,10 @@ console.log(newTree.delete(newTree.root, 2));
 console.log(newTree.find(newTree.root, 5));
 console.log(newTree.find(newTree.root, 6));
 console.log(newTree.find(newTree.root, 100));
-
-
+console.log(newTree.levelOrder(newTree.root));
+console.log(newTree.preorder(newTree.root));
+console.log(newTree.inorder(newTree.root));
+console.log(newTree.postorder(newTree.root));
 
 
 
