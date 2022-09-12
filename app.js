@@ -14,6 +14,7 @@ class Tree {
     this.preorderArr = [];
     this.inorderArr = [];
     this.postorderArr = [];
+    this.depths = 0;
   };
 
   // 1. build a binary tree from an array.
@@ -119,11 +120,7 @@ class Tree {
 
     return result;
   };
-
-  // preorder: root left right
-  // inroder: left root right
-  // postorder: left right root 
-
+  
   // 6. Functions should traverse the tree in their respective depth-first order
   preorder(root = this.root) {
     if (root === null) return;
@@ -157,8 +154,76 @@ class Tree {
   };
 
   // 7. Height accepts a node and returns its height.
-  height(node) {
-    
+  height(root = this.root) {
+    if (root === null) {
+        return null;
+    } else {
+        let left = this.height(root.left);
+        let right = this.height(root.right);
+
+        return Math.max(left, right) + 1;
+    }
+  };
+
+  // 8. Depth accepts a node and returns its depth
+  depth(root = this.root, node) {
+    if (root === null) return;
+    let cur;
+    if (node) {
+      cur = node.data;
+    } else {
+      return 'no such data exists.';
+    }
+
+    if (cur === node) {
+      return cur;
+    } else if (cur > root.data) {
+      this.depth(root.right, node);
+      this.depths++;
+    } else if (cur < root.data) {
+      this.depth(root.left, node);
+      this.depths++;
+    }
+
+    return `The depth of the node is ${this.depths}`;
+  };
+
+  // 9. isBalanced checks if the tree is balanced
+  isBalanaced(root = this.root) {
+    if (root === null) {
+      return null;
+    } else {
+      let left = this.height(root.left);
+      let right = this.height(root.right);
+
+      let l = left + 1;
+      let r = right + 1;
+      let diff = l > r ? l - r : r - l;
+
+      return diff <= 1 ? 'The Binary Tree is Balanced.' : 'The Binary Tree is not Balanced.';
+    }
+  };
+
+  // traversal method 
+  traverse(root = this.root, arr) {
+    arr.push(root.data);
+    if (root.left !== null) {
+        this.traverse(root.left, arr);
+    };
+    if (root.right !== null) {
+        this.traverse(root.right, arr);
+    };
+    return arr;
+  };
+
+  // 10. function which rebalances an unbalanced tree
+  rebalance() {
+    let rebalancedNewTreeArray = [];
+    rebalancedNewTreeArray = this.traverse(this.root, rebalancedNewTreeArray);
+
+    let balancedTree = new Tree(rebalancedNewTreeArray);
+
+    return balancedTree.root;
   };
 };
 
@@ -173,57 +238,3 @@ function minVal(root) {
 
   return min;
 };
-
-
-let array = [1, 2, 3, 6, 7, 8, 9];
-
-const newTree = new Tree(array);
-
-console.log(newTree.root);
-console.log(newTree.insert(newTree.root, 5));
-console.log(newTree.insert(newTree.root, 100));
-console.log(newTree.insert(newTree.root, 0));
-console.log(newTree.delete(newTree.root, 3));
-console.log(newTree.delete(newTree.root, 2));
-console.log(newTree.find(newTree.root, 5));
-console.log(newTree.find(newTree.root, 6));
-console.log(newTree.find(newTree.root, 100));
-console.log(newTree.levelOrder(newTree.root));
-console.log(newTree.preorder(newTree.root));
-console.log(newTree.inorder(newTree.root));
-console.log(newTree.postorder(newTree.root));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const prettyPrint = (node, prefix = '', isLeft = true) => {
-  if (node.right !== null) {
-    prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
-  }
-  console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
-  if (node.left !== null) {
-    prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
-  }
-};
-
-console.log(prettyPrint(newTree.root));
