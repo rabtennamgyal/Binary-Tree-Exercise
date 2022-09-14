@@ -5,8 +5,6 @@ class Node {
     this.right = null;
   }
 };
-
-
 class Tree {
   constructor(arr) {
     this.arr = arr;
@@ -15,6 +13,13 @@ class Tree {
     this.inorderArr = [];
     this.postorderArr = [];
     this.depths = 0;
+  };
+
+  // 0. clear the arrs
+  clearArrs() {
+    this.preorderArr = [];
+    this.inorderArr = [];
+    this.postorderArr = [];
   };
 
   // 1. build a binary tree from an array.
@@ -189,7 +194,7 @@ class Tree {
   };
 
   // 9. isBalanced checks if the tree is balanced
-  isBalanaced(root = this.root) {
+  isBalanced(root) {
     if (root === null) {
       return null;
     } else {
@@ -200,7 +205,7 @@ class Tree {
       let r = right + 1;
       let diff = l > r ? l - r : r - l;
 
-      return diff <= 1 ? 'The Binary Tree is Balanced.' : 'The Binary Tree is not Balanced.';
+      return diff < 1 ? 'The Binary Tree is Balanced.' : 'The Binary Tree is not Balanced.';
     }
   };
 
@@ -227,7 +232,6 @@ class Tree {
   };
 };
 
-
 function minVal(root) {
   let min = root.data;
 
@@ -238,3 +242,60 @@ function minVal(root) {
 
   return min;
 };
+
+function driverScript(arr) {
+  // 1.initiating tree
+  let newTree = new Tree(arr);
+
+  // 2. building the tree
+  const newTreeBuild = newTree.buildTree(arr, 0, arr.length - 1);
+
+  // 3. confirm that the tree is balanced.
+  const isthetreeBalanced = newTree.isBalanced(newTree.root);
+
+  // 4, print out preorder, inorder & postorder.
+  const preorder = newTree.preorder(newTree.root);
+  const inorder = newTree.inorder(newTree.root);
+  const postorder = newTree.postorder(newTree.root);
+
+  console.log(preorder, inorder, postorder);
+
+  // 5. unbalance the tree
+  newTree.insert(newTree.root, 100);
+  newTree.insert(newTree.root, 1002);
+
+  // 6. confirm that the tree is unbalanced
+  const unbalancedtree = newTree.isBalanced(newTree.root);
+
+  // 7. balance the tree by calling rebalance
+  const rebalanced = newTree.rebalance();
+
+  // 8. confirm that the tree is balanced again.
+  const balancedAgain = newTree.isBalanced(newTree.root);
+
+  // 9. clearing arrs
+  newTree.clearArrs();
+
+  // 10. print out preorder, inorder & postorder.
+  const preorder1 = newTree.preorder(newTree.root);
+  const inorder1 = newTree.inorder(newTree.root);
+  const postorder1 = newTree.postorder(newTree.root);
+
+  console.log(preorder1, inorder1, postorder1);
+
+  const prettyPrint = (node, prefix = '', isLeft = true) => {
+    if (node.right !== null) {
+      prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+    }
+    console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+    if (node.left !== null) {
+      prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+    }
+  };
+
+  console.log(prettyPrint(rebalanced));
+
+  return balancedAgain;
+};
+
+console.log(driverScript([0, 1, 2, 3, 4, 5, 6, 7, 8]));
